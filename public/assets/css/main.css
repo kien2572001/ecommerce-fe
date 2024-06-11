@@ -4894,6 +4894,7 @@ table .product-thumbnail img {
 
 /*PRODUCT DETAILS*/
 .detail-gallery {
+    max-width: 500px;
     position: relative;
 }
 
@@ -5552,7 +5553,7 @@ table .product-thumbnail img {
 }
 
 .shopping-summery table tbody tr img {
-    max-width: 120px;
+    max-width: 80px;
     border: 1px solid #ececec;
     border-radius: 15px;
 }
