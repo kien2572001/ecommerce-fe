@@ -8,11 +8,16 @@ import { useEffect, useState } from "react";
 import ShippingServices from "../services/api/shipping-api";
 import { toast } from "react-toastify";
 import OrderServices from "../services/api/order-api";
-
+import { useInitialDataContext } from "../services/hooks/useInitialData";
 import AddressComponent from "../components/ecommerce/AddressComponent";
+import Helpers from "../util/helpers";
+import { Badge } from "react-bootstrap";
+import Link from "next/link";
 export default function ShopCheckout() {
   const router = useRouter();
-  const { cartId, shopId } = router.query;
+  const { initialData, updateInventory, deleteInventory, productVariant } =
+    useInitialDataContext();
+  const { cartId, shopId, orderId } = router.query;
 
   const [inventories, setInventories] = useState([]);
   const [address, setAddress] = useState(null);
@@ -22,10 +27,27 @@ export default function ShopCheckout() {
 
   const calculateInventoryPrice = (inventories) => {
     let total = inventories.reduce((acc, item) => {
-      return acc + item.inventory.price * item.quantity;
+      return acc + getPrice(item.inventory) * item.quantity;
     }, 0);
     return total;
   };
+
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response = await OrderServices.getOrderByCode(orderId);
+        console.log("order", response);
+        if (response && response.code) {
+          router.push(`/orders/${response.code}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (orderId) {
+      fetchOrder();
+    }
+  }, [orderId]);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -34,7 +56,7 @@ export default function ShopCheckout() {
           cartId,
           shopId
         );
-        //console.log("inventories", response.data);
+        console.log("inventories", response.data);
         setInventories(response.data);
       } catch (error) {
         console.log(error);
@@ -65,6 +87,36 @@ export default function ShopCheckout() {
     }
   }, [address]);
 
+  const deleteAllInventories = async () => {
+    try {
+      let listInventoryIds = inventories.map((item) => item.inventory_id);
+      for (let i = 0; i < listInventoryIds.length; i++) {
+        await deleteInventory(shopId, listInventoryIds[i]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const isFlashSaleOngoing = (inventory) => {
+    if (inventory && inventory.flash_sale_start_time !== "") {
+    }
+    const startTime = new Date(Number(inventory.flash_sale_start_time));
+    const endTime = new Date(Number(inventory.flash_sale_end_time));
+    const currentTime = new Date();
+    if (currentTime > startTime && currentTime < endTime) {
+      return inventory.flash_sale_quantity > 0;
+    }
+    return false;
+  };
+
+  const getPrice = (inventory) => {
+    if (isFlashSaleOngoing(inventory)) {
+      return inventory.flash_sale_price;
+    }
+    return inventory.price;
+  };
+
   const handlePlaceOrder = async () => {
     if (!address) {
       toast.error("Please select an address");
@@ -82,8 +134,8 @@ export default function ShopCheckout() {
       toast.error("No products in cart");
       return;
     }
-
     const order = {
+      code: orderId || Helpers.generateOrderId(),
       user_id: cartId,
       shop_id: shopId,
       payment_method: selectedPaymentMethod,
@@ -111,6 +163,7 @@ export default function ShopCheckout() {
         toast.error("The product is out of stock");
         return;
       } else if (response.status === "success") {
+        deleteAllInventories();
         toast.success("Order placed successfully");
         if (selectedPaymentMethod === "MOMO" && response.payment) {
           // Redirect to MOMO payment page
@@ -196,16 +249,29 @@ export default function ShopCheckout() {
                         {inventories?.map((item, i) => (
                           <tr key={i}>
                             <td className="image product-thumbnail">
-                              <img
-                                src={item?.product?.images[0]?.url}
-                                alt="#"
-                              />
+                              <Link
+                                href={`/products/${item.product.product_slug}`}
+                              >
+                                <img
+                                  src={item?.product?.images[0]?.url}
+                                  alt="#"
+                                />
+                              </Link>
                             </td>
                             <td>
                               <h6 className=" mb-5">
-                                <a>{item.product.product_name}</a>
+                                <Link
+                                  href={`/products/${item.product.product_slug}`}
+                                >
+                                  {item.product.product_name}
+                                </Link>
                                 <p className=" font-sm">
                                   {renderProductVariants(item.inventory_id)}
+                                  {isFlashSaleOngoing(item.inventory) && (
+                                    <Badge pill bg="danger">
+                                      Flash Sale
+                                    </Badge>
+                                  )}
                                 </p>
                                 {/* <div className="product-rate-cover">
                                   <div className="product-rate d-inline-block">
@@ -224,8 +290,19 @@ export default function ShopCheckout() {
                               </h6>{" "}
                             </td>
                             <td>
-                              <h6 className="text-muted pl-20 pr-20">
-                                <ProductPrice price={item.inventory.price} />
+                              <h6 className="text-brand pl-20 pr-20">
+                                <ProductPrice
+                                  price={getPrice(item.inventory)}
+                                />
+                                {isFlashSaleOngoing(item.inventory) && (
+                                  <p className="text-muted">
+                                    <del>
+                                      <ProductPrice
+                                        price={item.inventory.price}
+                                      />
+                                    </del>
+                                  </p>
+                                )}
                               </h6>
                             </td>
                             <td>
@@ -236,7 +313,9 @@ export default function ShopCheckout() {
                             <td>
                               <h4 className="text-brand">
                                 <ProductPrice
-                                  price={item.quantity * item.inventory.price}
+                                  price={
+                                    item.quantity * getPrice(item.inventory)
+                                  }
                                 />
                               </h4>
                             </td>

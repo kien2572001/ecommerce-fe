@@ -183,7 +183,7 @@ const AddAddressModal = ({ show, onClose, onSave }) => {
               placeholder="Enter street address"
             />
           </Form.Group>
-          <Form.Group controlId="formMap">
+          {/* <Form.Group controlId="formMap">
             <Form.Label>Map</Form.Label>
             <div
               style={{
@@ -192,14 +192,13 @@ const AddAddressModal = ({ show, onClose, onSave }) => {
                 border: "1px solid #ced4da",
               }}
             >
-              {/* Embed your map here */}
               <p className="text-center mt-5">Map will be displayed here</p>
             </div>
-          </Form.Group>
+          </Form.Group> */}
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button variant="secondary" onClick={onClose} size="sm">
           Cancel
         </Button>
         <Button variant="primary" onClick={handleSave} size="sm">

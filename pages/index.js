@@ -26,11 +26,11 @@ function Test() {
         <div className="container mb-30">
           <div className="row flex-row-reverse">
             <div className="col-lg-4-5">
-              <section className="home-slider position-relative mb-30">
+              {/* <section className="home-slider position-relative mb-30">
                 <div className="home-slide-cover mt-30">
                   <Intro2 />
                 </div>
-              </section>
+              </section> */}
 
               <section className="product-tabs section-padding position-relative">
                 <CategoryTab />
@@ -156,7 +156,7 @@ function Test() {
           </div>
         </div>
 
-        <section className="popular-categories section-padding">
+        {/* <section className="popular-categories section-padding">
           <div className="container">
             <div className="section-title">
               <div className="title">
@@ -173,9 +173,9 @@ function Test() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <Bottom />
+        {/* <Bottom /> */}
       </Layout>
     </>
   );

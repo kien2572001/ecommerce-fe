@@ -3921,7 +3921,8 @@ table .product-thumbnail img {
     position: relative;
     background-color: #fff;
     border: 1px solid #ececec;
-    border-radius: 15px;
+    /* border-radius: 15px; */
+    border-radius: 10px;
     overflow: hidden;
     transition: 0.2s;
     -moz-transition: 0.2s;
@@ -3944,7 +3945,8 @@ table .product-thumbnail img {
     background-color: #fff;
     overflow: hidden;
     max-height: 320px;
-    padding: 25px 25px 0 25px;
+    /* padding: 25px 25px 0 25px; */
+    padding: 10px 10px 10px 10px;
 }
 
 .product-cart-wrap .product-img-action-wrap .product-action-1 {
@@ -3956,7 +3958,8 @@ table .product-thumbnail img {
 .product-cart-wrap .product-img-action-wrap .product-img {
     position: relative;
     overflow: hidden;
-    border-radius: 15px;
+    /* border-radius: 15px; */
+    border-radius: 5px;
 }
 
 .product-cart-wrap .product-img-action-wrap .product-img a {
@@ -11856,3 +11859,17 @@ footer .hotline img {
     z-index: 99999;
 }
 /*# sourceMappingURL=main.css.map */
+
+/* Custom CSS */
+.two-line-ellipsis {
+    line-height: 1.5em; /* Adjust line height as needed */
+    min-height: 3em; /* Set min height for two lines */
+    overflow: hidden;
+    white-space: normal; /* Allow text to wrap */
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.flash-sale-box{
+    cursor: pointer;
+}

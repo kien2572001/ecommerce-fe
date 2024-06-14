@@ -1,5 +1,5 @@
 import React, { useState, lazy, Suspense } from "react";
-
+import Helpers from "../../util/helpers";
 // Lazy load các component
 const DescriptionTab = lazy(() => import("./ProductTabChild/DescriptionTab"));
 const AdditionalInfoTab = lazy(() =>
@@ -56,7 +56,11 @@ const ProductTab = ({ product }) => {
               data-bs-toggle="tab"
               onClick={() => handleOnClick(4)}
             >
-              Reviews (3)
+              Reviews (
+              {product?.total_reviews
+                ? Helpers.formatNumber(product.total_reviews)
+                : 0}
+              )
             </a>
           </li>
         </ul>

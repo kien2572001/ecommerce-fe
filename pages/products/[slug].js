@@ -16,9 +16,7 @@ const ProductId = () => {
   const [product, setProduct] = useState(null);
   useEffect(() => {
     const fetchProduct = async () => {
-      const data = await ProductServices.fetchProductBySlug(
-        "Small-Wooden-Table-1717412772339"
-      );
+      const data = await ProductServices.fetchProductBySlug(slug);
       setProduct(data);
       console.log(data);
     };
@@ -29,7 +27,7 @@ const ProductId = () => {
       <Layout
         parent="Home"
         sub="Shop"
-        subChild={product?.title || "HHEHEHEHEHEHE"}
+        subChild={product?.category?.category_name || ""}
       >
         <div className="container">
           <ProductDetails product={product} />

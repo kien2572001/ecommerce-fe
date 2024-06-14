@@ -170,11 +170,18 @@ export default function OrderDetail() {
                     >
                       {order && (
                         <p style={{ margin: 0, fontSize: "20px" }}>
-                          <p></p>
-                          <strong style={{ color: "black" }}>
-                            {order.shipping_address?.name},{" "}
-                            {order.shipping_address?.phone}
-                          </strong>{" "}
+                          <p>
+                            <h5
+                              className="d-inline "
+                              style={{
+                                color: "black",
+                              }}
+                            >
+                              Shipping Address:{" "}
+                            </h5>
+                          </p>
+                          {order.shipping_address?.name},{" - "}
+                          {order.shipping_address?.phone}
                           {"  -  "}
                           {order.shipping_address?.full_address}
                         </p>

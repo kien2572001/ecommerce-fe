@@ -17,6 +17,55 @@ class ProductServices {
     return ProductServices.instance;
   }
 
+  async fetchProductInHomePage(
+    page,
+    limit,
+    keyword = "",
+    category_slug,
+    {
+      trending = false,
+      popular = false,
+      newArrival = false,
+      priceRange = null,
+      priceOrder = null,
+    }
+  ) {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/public/product/homepage?` +
+          new URLSearchParams({
+            page,
+            limit,
+            keyword,
+            category_slug,
+            trending,
+            popular,
+            newArrival,
+            priceRange: priceRange ? JSON.stringify(priceRange) : null,
+            priceOrder,
+          }),
+
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          },
+        }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message, error.status);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw error; // Re-throw for handling in components
+    }
+  }
+
   async fetchProductBySlug(slug) {
     try {
       const response = await fetch(
@@ -46,6 +95,31 @@ class ProductServices {
     try {
       const response = await fetch(
         `${this.baseUrl}/public/category/root-list`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          },
+        }
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message, error.status);
+      }
+
+      const data = await response.json();
+      return data.data;
+    } catch (error) {
+      throw error; // Re-throw for handling in components
+    }
+  }
+
+  async fetchCategoryBySlug(slug) {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/public/category/slug/${slug}`,
         {
           method: "GET",
           headers: {

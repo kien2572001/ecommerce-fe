@@ -37,7 +37,7 @@ const VendorTab = ({ product }) => {
         <li>
           <img src="/assets/imgs/theme/icons/icon-location.svg" alt="nest" />
           <strong>Address: </strong>{" "}
-          <span>{vendor?.address || <Skeleton />}</span>
+          <span>{vendor?.address?.full_address || <Skeleton />}</span>
         </li>
         <li>
           <img src="/assets/imgs/theme/icons/icon-contact.svg" alt="nest" />

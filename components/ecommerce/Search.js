@@ -4,6 +4,7 @@ import { useInitialDataContext } from "../../services/hooks/useInitialData";
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [categorySlug, setCategorySlug] = useState(""); // [1
   const router = useRouter();
   const { initialData } = useInitialDataContext();
 
@@ -13,6 +14,7 @@ const Search = () => {
       pathname: "/products",
       query: {
         search: searchTerm,
+        cat: categorySlug,
       },
     });
     setSearchTerm("");
@@ -27,12 +29,20 @@ const Search = () => {
   return (
     <>
       <form>
-        <select className="select-active">
+        <select
+          className="select-active"
+          onChange={(e) => setCategorySlug(e.target.value)}
+        >
           <option>All Categories</option>
           {initialData.rootCategories &&
             initialData.rootCategories.map((category) => {
               return (
-                <option key={category._id}>{category.category_name}</option>
+                <option
+                  key={category.category_slug}
+                  value={category.category_slug}
+                >
+                  {category.category_name}
+                </option>
               );
             })}
         </select>

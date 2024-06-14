@@ -22,6 +22,7 @@ const InitialDataProvider = ({ children }) => {
     const fetchRootCategories = async () => {
       try {
         const response = await ProductServices.fetchRootCategories();
+        //console.log("fetchRootCategories: ", response);
         setInitialData({ ...initialData, rootCategories: response.items });
       } catch (error) {
         console.log(error);
