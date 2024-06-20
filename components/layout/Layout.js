@@ -6,6 +6,7 @@ import Breadcrumb from "./Breadcrumb";
 import Footer from "./Footer";
 import Header from "./Header";
 import MobileMenu from "./MobileMenu";
+import AuthGuard from "../../services/guards/AuthGuard";
 
 const Layout = ({
   children,

@@ -8,7 +8,7 @@ import AddressComponent from "../../components/ecommerce/AddressComponent";
 import ProductPrice from "../../components/ecommerce/ProductPrice";
 import NotificationModal from "../../components/elements/NotificationModal";
 import { Badge } from "react-bootstrap";
-
+import moment from "moment";
 export default function OrderDetail() {
   const router = useRouter();
   const { code } = router.query;
@@ -245,6 +245,29 @@ export default function OrderDetail() {
                             MOMO
                           </Badge>
                         )}
+                      </span>
+                    </div>
+                    {/* Created At */}
+                    <div className="mb-10">
+                      <h5
+                        className="d-inline "
+                        style={{
+                          color: "black",
+                        }}
+                      >
+                        Created At:{" "}
+                      </h5>
+                      <span
+                        className=""
+                        style={{
+                          fontSize: "20px",
+                        }}
+                      >
+                        {
+                          moment(order?.created_at).format(
+                            "DD/MM/YYYY HH:mm:ss"
+                          ) // 2021-09-29T08:22:00.000Z
+                        }
                       </span>
                     </div>
                   </div>

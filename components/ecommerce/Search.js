@@ -3,13 +3,20 @@ import React, { useState } from "react";
 import { useInitialDataContext } from "../../services/hooks/useInitialData";
 
 const Search = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categorySlug, setCategorySlug] = useState(""); // [1
   const router = useRouter();
+  const { search, cat } = router.query;
+  const {
+    initialData: { rootCategories },
+  } = useInitialDataContext();
+  console.log("router.query", router.query);
+  const [searchTerm, setSearchTerm] = useState(search || "");
+  const [categorySlug, setCategorySlug] = useState(
+    rootCategories.find((category) => category.category_slug === cat) ? cat : ""
+  );
   const { initialData } = useInitialDataContext();
 
   const handleSearch = () => {
-    console.log("click");
+    //console.log("click");
     router.push({
       pathname: "/products",
       query: {

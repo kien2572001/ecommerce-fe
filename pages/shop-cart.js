@@ -159,7 +159,7 @@ const Cart = () => {
                                   <td className="product-des product-name">
                                     <h6 className="product-name">
                                       <Link
-                                        href={`/product/${item.product_slug}`}
+                                        href={`/products/${item.product?.product_slug}`}
                                       >
                                         {item.product?.product_name}
                                       </Link>

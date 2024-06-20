@@ -6474,7 +6474,7 @@ h6.post-title {
     top: 100%;
     left: 0;
     z-index: 2;
-    min-width: 120px;
+    min-width: 130px;
     background: #fff;
     border-radius: 0 0 4px 4px;
     -webkit-transform: translateY(20px);

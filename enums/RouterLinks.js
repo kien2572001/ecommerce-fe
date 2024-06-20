@@ -7,6 +7,8 @@ const RouterLinks = {
 
   CART_PAGE: "/shop-cart",
   CHECKOUT_PAGE: "/shop-checkout",
+
+  ACCOUNT: "/account",
 };
 
 export default RouterLinks;

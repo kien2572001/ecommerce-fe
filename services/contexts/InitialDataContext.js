@@ -44,6 +44,8 @@ const InitialDataProvider = ({ children }) => {
   useEffect(() => {
     if (user && user._id) {
       fetchCart(user._id);
+    } else {
+      setInitialData({ ...initialData, cart: [] });
     }
   }, [user]);
 

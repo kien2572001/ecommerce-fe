@@ -15,7 +15,7 @@ const Header = ({
   toggleClick,
   totalWishlistItems,
 }) => {
-  const { logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
   const { initialData } = useInitialDataContext();
   const [isToggled, setToggled] = useState(false);
   const [scroll, setScroll] = useState(0);
@@ -97,28 +97,10 @@ const Header = ({
                         <li>
                           <Link href="/#">
                             <img
-                              src="/assets/imgs/theme/flag-fr.png"
+                              src="/assets/imgs/theme/flag-vn.png"
                               alt="nest"
                             />
-                            Français
-                          </Link>
-                        </li>
-                        <li>
-                          <Link href="/#">
-                            <img
-                              src="/assets/imgs/theme/flag-dt.png"
-                              alt="nest"
-                            />
-                            Deutsch
-                          </Link>
-                        </li>
-                        <li>
-                          <Link href="/#">
-                            <img
-                              src="/assets/imgs/theme/flag-ru.png"
-                              alt="nest"
-                            />
-                            Pусский
+                            Vietnamese
                           </Link>
                         </li>
                       </ul>
@@ -143,90 +125,104 @@ const Header = ({
                 </div>
                 <div className="header-action-right">
                   <div className="header-action-2">
-                    <div className="header-action-icon-2">
-                      <Link href="/shop-wishlist">
-                        <img
-                          className="svgInject"
-                          alt="Evara"
-                          src="/assets/imgs/theme/icons/icon-heart.svg"
-                        />
-                        <span className="pro-count blue">
-                          {totalWishlistItems}
-                        </span>
-                      </Link>
-                      <Link href="/shop-wishlist">
-                        <span className="lable">Wishlist</span>
-                      </Link>
-                    </div>
-                    <div className="header-action-icon-2">
-                      <Link
-                        href={RouterLinks.CART_PAGE}
-                        className="mini-cart-icon"
-                      >
-                        <img
-                          alt="Evara"
-                          src="/assets/imgs/theme/icons/icon-cart.svg"
-                        />
-                        <span className="pro-count blue">
-                          {initialData?.cart?.items?.length || 0}
-                        </span>
-                      </Link>
-                      <Link href="/shop-cart">
-                        <span className="lable">Cart</span>
-                      </Link>
-                    </div>
+                    {isAuthenticated && (
+                      <>
+                        <div className="header-action-icon-2">
+                          <Link href="/shop-wishlist">
+                            <img
+                              className="svgInject"
+                              alt="Evara"
+                              src="/assets/imgs/theme/icons/icon-heart.svg"
+                            />
+                            <span className="pro-count blue">
+                              {totalWishlistItems}
+                            </span>
+                          </Link>
+                          <Link href="/shop-wishlist">
+                            <span className="lable">Wishlist</span>
+                          </Link>
+                        </div>
+                        <div className="header-action-icon-2">
+                          <Link
+                            href={RouterLinks.CART_PAGE}
+                            className="mini-cart-icon"
+                          >
+                            <img
+                              alt="Evara"
+                              src="/assets/imgs/theme/icons/icon-cart.svg"
+                            />
+                            <span className="pro-count blue">
+                              {initialData?.cart?.items?.length || 0}
+                            </span>
+                          </Link>
+                          <Link href="/shop-cart">
+                            <span className="lable">Cart</span>
+                          </Link>
+                        </div>
+                      </>
+                    )}
 
                     <div className="header-action-icon-2">
-                      <Link href="/page-account">
-                        <img
-                          className="svgInject"
-                          alt="Nest"
-                          src="/assets/imgs/theme/icons/icon-user.svg"
-                        />
-                      </Link>
-                      <Link href="/page-account">
-                        <span className="lable ml-0">Account</span>
-                      </Link>
-                      <div className="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
-                        <ul>
-                          <li>
-                            <Link href="/page-account">
-                              <i className="fi fi-rs-user mr-10"></i>
-                              My Account
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/page-account">
-                              <i className="fi fi-rs-location-alt mr-10"></i>
-                              Order Tracking
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/page-account">
-                              <i className="fi fi-rs-label mr-10"></i>
-                              My Voucher
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/shop-wishlist">
-                              <i className="fi fi-rs-heart mr-10"></i>
-                              My Wishlist
-                            </Link>
-                          </li>
-                          <li>
-                            <Link href="/page-account">
-                              <i className="fi fi-rs-settings-sliders mr-10"></i>
-                              Setting
-                            </Link>
-                          </li>
-                          <li>
-                            <a onClick={handleLogout}>
-                              <i className="fi fi-rs-sign-out mr-10"></i>
-                              Sign out
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
+                      {isAuthenticated ? (
+                        <>
+                          <Link href={RouterLinks.ACCOUNT}>
+                            <img
+                              className="svgInject"
+                              alt="Nest"
+                              src="/assets/imgs/theme/icons/icon-user.svg"
+                            />
+                          </Link>
+                          <Link href={RouterLinks.ACCOUNT}>
+                            <span className="lable ml-0">Account</span>
+                          </Link>
+                        </>
+                      ) : (
+                        <Link href={RouterLinks.LOGIN}>
+                          <span className="lable ml-0">Login/Register</span>
+                        </Link>
+                      )}
+                      {isAuthenticated && (
+                        <div className="cart-dropdown-wrap cart-dropdown-hm2 account-dropdown">
+                          <ul>
+                            <li>
+                              <Link href={RouterLinks.ACCOUNT}>
+                                <i className="fi fi-rs-user mr-10"></i>
+                                My Account
+                              </Link>
+                            </li>
+                            <li>
+                              <Link href={RouterLinks.ACCOUNT}>
+                                <i className="fi fi-rs-location-alt mr-10"></i>
+                                Order Tracking
+                              </Link>
+                            </li>
+                            <li>
+                              <Link href={RouterLinks.ACCOUNT}>
+                                <i className="fi fi-rs-label mr-10"></i>
+                                My Voucher
+                              </Link>
+                            </li>
+                            <li>
+                              <Link href="/shop-wishlist">
+                                <i className="fi fi-rs-heart mr-10"></i>
+                                My Wishlist
+                              </Link>
+                            </li>
+                            <li>
+                              <Link href={RouterLinks.ACCOUNT}>
+                                <i className="fi fi-rs-settings-sliders mr-10"></i>
+                                Setting
+                              </Link>
+                            </li>
+                            <li>
+                              <a onClick={handleLogout}>
+                                <i className="fi fi-rs-sign-out mr-10"></i>
+                                Sign out
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
