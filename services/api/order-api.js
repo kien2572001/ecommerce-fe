@@ -5,7 +5,8 @@ class OrderServices {
     if (OrderServices.instance) {
       throw new Error("Singleton class, Use OrderServices.getInstance()");
     }
-    this.baseUrl = "http://localhost:8041/public/order";
+    //this.baseUrl = "http://localhost:8041/public/order";
+    this.baseUrl = process.env.ORDER_SERVICE_URL + "/public/order";
     OrderServices.instance = this;
   }
 
@@ -91,6 +92,8 @@ class OrderServices {
       throw error; // Re-throw for handling in components
     }
   }
+
+  async createStripeSession() {}
 }
 
 export default OrderServices.getInstance();

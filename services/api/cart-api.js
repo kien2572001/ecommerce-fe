@@ -6,7 +6,8 @@ class CartServices {
       throw new Error("Singleton class, Use CartServices.getInstance()");
     }
     //this.baseUrl = process.env.BACKEND_URL + "/auth-service";
-    this.baseUrl = "http://localhost:8031";
+    //this.baseUrl = "http://localhost:8031";
+    this.baseUrl = process.env.INVENTORY_SERVICE_URL;
     CartServices.instance = this;
   }
 

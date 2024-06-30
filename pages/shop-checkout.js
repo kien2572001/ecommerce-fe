@@ -13,6 +13,7 @@ import AddressComponent from "../components/ecommerce/AddressComponent";
 import Helpers from "../util/helpers";
 import { Badge } from "react-bootstrap";
 import Link from "next/link";
+import { loadStripe } from "@stripe/stripe-js";
 export default function ShopCheckout() {
   const router = useRouter();
   const { initialData, updateInventory, deleteInventory, productVariant } =
@@ -170,6 +171,15 @@ export default function ShopCheckout() {
           console.log("payUrl", response.payment.payUrl);
           window.location.href = response.payment.payUrl;
           return;
+        } else if (selectedPaymentMethod === "STRIPE" && response.payment) {
+          console.log("stripe payment", response.payment);
+          const stripe = await loadStripe(process.env.STRIPE_PUBLISHABLE_KEY);
+          const result = await stripe.redirectToCheckout({
+            sessionId: response.payment.id,
+          });
+          if (result.error) {
+            console.log(result.error);
+          }
         } else if (selectedPaymentMethod === "COD") {
           router.push(`/orders/${response.order}`);
         }
@@ -457,6 +467,36 @@ export default function ShopCheckout() {
                           >
                             <p className="text-muted mt-5">
                               Pay via MOMO; you can pay with your MOMO account.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="custome-radio">
+                          <input
+                            className="form-check-input"
+                            required
+                            type="radio"
+                            name="payment_option"
+                            id="stripeOption"
+                            onChange={() => setSelectedPaymentMethod("STRIPE")}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="stripeOption"
+                            data-bs-toggle="collapse"
+                            data-target="#stripe"
+                            aria-controls="stripe"
+                          >
+                            STRIPE
+                          </label>
+                          <div
+                            className={`form-group collapse ${
+                              selectedPaymentMethod === "STRIPE" ? "show" : ""
+                            }`}
+                            id="stripe"
+                          >
+                            <p className="text-muted mt-5">
+                              Pay securely with your credit or debit card via
+                              Stripe.
                             </p>
                           </div>
                         </div>

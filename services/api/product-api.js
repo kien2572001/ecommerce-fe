@@ -6,7 +6,8 @@ class ProductServices {
       throw new Error("Singleton class, Use ProductServices.getInstance()");
     }
     //this.baseUrl = process.env.BACKEND_URL + "/product-service";
-    this.baseUrl = "http://localhost:8021";
+    //this.baseUrl = "http://localhost:8021";
+    this.baseUrl = process.env.PRODUCT_SERVICE_URL;
     ProductServices.instance = this;
   }
 

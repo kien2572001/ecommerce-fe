@@ -6,6 +6,8 @@ import Pagination from "../../ecommerce/Pagination";
 import ProductPrice from "../../ecommerce/ProductPrice";
 import Link from "next/link";
 import moment from "moment";
+import { Badge } from "react-bootstrap";
+import OrderStatusEnum from "../../../enums/OrderStatus";
 const OrdersTab = () => {
   const { user } = useAuth();
   const {
@@ -20,6 +22,31 @@ const OrdersTab = () => {
   } = usePagination(1, 10);
   const [orders, setOrders] = useState([]);
   const [pageArray, setPageArray] = useState([]);
+
+  const getBadgeVariant = (status) => {
+    switch (status) {
+      case OrderStatusEnum.PENDING:
+        return "secondary";
+      case OrderStatusEnum.PLACED:
+        return "primary";
+      case OrderStatusEnum.FAILED:
+        return "danger";
+      case OrderStatusEnum.PAID:
+        return "success";
+      case OrderStatusEnum.CONFIRMED:
+        return "info"; // Ví dụ: màu info cho trạng thái confirmed
+      case OrderStatusEnum.SHIPPING_CREATED:
+        return "warning"; // Ví dụ: màu warning cho trạng thái shipping_created
+      case OrderStatusEnum.DELIVERED:
+        return "dark"; // Ví dụ: màu dark cho trạng thái delivered
+      case OrderStatusEnum.CANCELLED:
+        return "secondary"; // Ví dụ: màu secondary cho trạng thái cancelled
+      case OrderStatusEnum.DONE:
+        return "success"; // Ví dụ: màu success cho trạng thái done
+      default:
+        return "secondary"; // Mặc định trả về màu secondary nếu không khớp với bất kỳ trạng thái nào
+    }
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -78,7 +105,15 @@ const OrdersTab = () => {
                   <td>
                     {moment(order.created_at).format("MMMM DD, YYYY HH:mm")}
                   </td>
-                  <td>{order.status}</td>
+                  <td>
+                    <Badge
+                      pill
+                      bg={getBadgeVariant(order.status)}
+                      //style={{ fontSize: "20px" }}
+                    >
+                      {order.status?.toUpperCase()}
+                    </Badge>
+                  </td>
                   <td>
                     <ProductPrice price={order.total} />
                   </td>

@@ -462,7 +462,7 @@ const ProductDetails = ({
                 {quickView ? null : (
                   <>
                     <ProductTab product={product} />
-                    <div className="row mt-60">
+                    {/* <div className="row mt-60">
                       <div className="col-12">
                         <h3 className="section-title style-1 mb-30">
                           Related products
@@ -473,7 +473,7 @@ const ProductDetails = ({
                           <RelatedSlider />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </div>

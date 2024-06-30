@@ -5,7 +5,8 @@ class ShippingServices {
     if (ShippingServices.instance) {
       throw new Error("Singleton class, Use ShippingServices.getInstance()");
     }
-    this.baseUrl = "http://localhost:8011/address";
+    //this.baseUrl = "http://localhost:8011/address";
+    this.baseUrl = process.env.USER_SERVICE_URL + "/address";
     ShippingServices.instance = this;
   }
 

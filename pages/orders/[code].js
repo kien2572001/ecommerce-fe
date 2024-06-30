@@ -1,4 +1,5 @@
 "use client";
+
 import { useRouter } from "next/router";
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
@@ -7,16 +8,53 @@ import Layout from "../../components/layout/Layout";
 import AddressComponent from "../../components/ecommerce/AddressComponent";
 import ProductPrice from "../../components/ecommerce/ProductPrice";
 import NotificationModal from "../../components/elements/NotificationModal";
-import { Badge } from "react-bootstrap";
+import { Badge, Modal, Button } from "react-bootstrap";
 import moment from "moment";
+import OrderStatusEnum from "../../enums/OrderStatus";
 export default function OrderDetail() {
   const router = useRouter();
-  const { code } = router.query;
+  const { code, paymentSuccess } = router.query;
+  console.log(router.query);
   const [order, setOrder] = useState(null);
   const [status, setStatus] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    if (paymentSuccess === "true") {
+      setModalMessage("Payment was successful!");
+      setIsSuccess(true);
+      setShowModal(true);
+      // Xóa query parameter sau khi hiện thông báo
+      const newQuery = { ...router.query };
+      delete newQuery.paymentSuccess;
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    } else if (paymentSuccess === "failed") {
+      setModalMessage("Payment failed!");
+      setIsSuccess(false);
+      setShowModal(true);
+      // Xóa query parameter sau khi hiện thông báo
+      const newQuery = { ...router.query };
+      delete newQuery.paymentSuccess;
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [paymentSuccess]);
+
   useEffect(() => {
     const socket = io("http://localhost:8051");
 
@@ -103,18 +141,53 @@ export default function OrderDetail() {
 
   const getBadgeVariant = (status) => {
     switch (status) {
-      case "PENDING":
-        return "warning";
-      case "PLACED":
-        return "primary";
-      case "FAILED":
-        return "danger";
-      case "SUCCESS":
-        return "success";
-      default:
+      case OrderStatusEnum.PENDING:
         return "secondary";
+      case OrderStatusEnum.PLACED:
+        return "primary";
+      case OrderStatusEnum.FAILED:
+        return "danger";
+      case OrderStatusEnum.PAID:
+        return "success";
+      case OrderStatusEnum.CONFIRMED:
+        return "info"; // Ví dụ: màu info cho trạng thái confirmed
+      case OrderStatusEnum.SHIPPING_CREATED:
+        return "warning"; // Ví dụ: màu warning cho trạng thái shipping_created
+      case OrderStatusEnum.DELIVERED:
+        return "dark"; // Ví dụ: màu dark cho trạng thái delivered
+      case OrderStatusEnum.CANCELLED:
+        return "secondary"; // Ví dụ: màu secondary cho trạng thái cancelled
+      case OrderStatusEnum.DONE:
+        return "success"; // Ví dụ: màu success cho trạng thái done
+      default:
+        return "secondary"; // Mặc định trả về màu secondary nếu không khớp với bất kỳ trạng thái nào
     }
   };
+
+  function getStatusDescription(status) {
+    switch (status) {
+      case OrderStatusEnum.PENDING:
+        return "Waiting for save order";
+      case OrderStatusEnum.PLACED:
+        return "Waiting for shop confirmation";
+      case OrderStatusEnum.PAYMENT_PENDING:
+        return "";
+      case OrderStatusEnum.PAID:
+        return "Waiting for shop confirmation";
+      case OrderStatusEnum.CONFIRMED:
+        return "Shop is preparing your order";
+      case OrderStatusEnum.SHIPPING_CREATED:
+        return "Order is shipping";
+      case OrderStatusEnum.DELIVERED:
+        return "Order delivered";
+      case OrderStatusEnum.CANCELLED:
+        return "Order cancelled";
+      case OrderStatusEnum.DONE:
+        return "Order done";
+      default:
+        return "Unknown status";
+    }
+  }
 
   return (
     <>
@@ -169,8 +242,8 @@ export default function OrderDetail() {
                       className="mb-10"
                     >
                       {order && (
-                        <p style={{ margin: 0, fontSize: "20px" }}>
-                          <p>
+                        <div style={{ margin: 0, fontSize: "20px" }}>
+                          <div>
                             <h5
                               className="d-inline "
                               style={{
@@ -179,12 +252,12 @@ export default function OrderDetail() {
                             >
                               Shipping Address:{" "}
                             </h5>
-                          </p>
+                          </div>
                           {order.shipping_address?.name},{" - "}
                           {order.shipping_address?.phone}
                           {"  -  "}
                           {order.shipping_address?.full_address}
-                        </p>
+                        </div>
                       )}
                     </div>
                     {/* Status */}
@@ -205,11 +278,25 @@ export default function OrderDetail() {
                       >
                         <Badge
                           pill
-                          bg={getBadgeVariant(status?.toUpperCase())}
+                          bg={getBadgeVariant(status)}
                           //style={{ fontSize: "20px" }}
                         >
                           {status?.toUpperCase()}
                         </Badge>
+                        <span className="ml-10 font-sm text-muted">
+                          ({getStatusDescription(status)})
+                        </span>
+                        {status === "payment_pending" &&
+                          order?.payment_method !== "COD" &&
+                          order?.payment_info?.url && (
+                            <a
+                              href={order?.payment_info?.url}
+                              target="_blank"
+                              className="btn btn-primary ml-10 btn-sm"
+                            >
+                              Pay now
+                            </a>
+                          )}
                       </span>
                     </div>
                     {/* Payment method */}
@@ -242,7 +329,7 @@ export default function OrderDetail() {
                             bg="danger"
                             //style={{ fontSize: "20px" }}
                           >
-                            MOMO
+                            {order?.payment_method}
                           </Badge>
                         )}
                       </span>
